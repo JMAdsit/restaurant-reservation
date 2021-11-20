@@ -26,12 +26,25 @@ function NewReservation({ date }) {
 
     //handle submit button
 
-    //get earliest time
-    let currentDate = new Date();
-    let cHour = currentDate.getHours() + 1;
-    let cMinute = currentDate.getMinutes() + 1;
+    //get current time and set default minimum date and time
+    let cDate = new Date();
+    let cHour = cDate.getHours();
+    let cMinute = String(cDate.getMinutes()).padStart(2, '0');
     let cTime = `${cHour}:${cMinute}`;
+    let minDate = date;
     let minTime = `10:30`;
+    
+    //disable today if after 9:30 PM
+    if(cTime > `21:30`) {
+        const tomorrow = new Date()
+        tomorrow.setDate(new Date().getDate() + 1)
+        let tYear = tomorrow.getFullYear();
+        let tMonth = tomorrow.getMonth() + 1;
+        let tDate = tomorrow.getDate();
+        minDate = `${tYear}-${tMonth}-${tDate}`
+    }
+
+    //adjust earliest reservation time for today
     if(date === reservation.reservation_date) {
         minTime = cTime;
     }
@@ -90,7 +103,7 @@ function NewReservation({ date }) {
                     id="reservation_date"
                     name="reservation_date" 
                     type="date" 
-                    min={date}
+                    min={minDate}
                     value={reservation.reservation_date}
                     onChange={changeHandler}
                     />
