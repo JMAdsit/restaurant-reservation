@@ -47,8 +47,5 @@
   },
   "keywords": [],
   "author": "Thinkful, Inc.",
-  "license": "UNLICENSED",
-  "dependencies": {
-    "nodemon": "^2.0.15"
-  }
+  "license": "UNLICENSED"
 }

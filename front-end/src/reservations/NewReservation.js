@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { useHistory } from "react-router-dom";
+import { next } from "../utils/date-time.js";
 
 function NewReservation({ date }) {
     //declare reservation state
@@ -25,6 +26,9 @@ function NewReservation({ date }) {
     }
 
     //handle submit button
+    function handleSubmit(event) {
+        event.preventDefault();
+    }
 
     //get current time and set default minimum date and time
     let cDate = new Date();
@@ -34,14 +38,16 @@ function NewReservation({ date }) {
     let minDate = date;
     let minTime = `10:30`;
     
+    
     //disable today if after 9:30 PM
     if(cTime > `21:30`) {
-        const tomorrow = new Date()
-        tomorrow.setDate(new Date().getDate() + 1)
-        let tYear = tomorrow.getFullYear();
-        let tMonth = tomorrow.getMonth() + 1;
-        let tDate = tomorrow.getDate();
-        minDate = `${tYear}-${tMonth}-${tDate}`
+        // const tomorrow = new Date();
+        // tomorrow.setDate(new Date().getDate() + 1);
+        // let tYear = tomorrow.getFullYear();
+        // let tMonth = tomorrow.getMonth() + 1;
+        // let tDate = tomorrow.getDate();
+        // minDate = `${tYear}-${tMonth}-${tDate}`;
+        minDate = next(date);
     }
 
     //adjust earliest reservation time for today
@@ -51,7 +57,7 @@ function NewReservation({ date }) {
 
     return <div>
         <h2>New Reservation</h2>
-        <form /*onSubmit={}*/>
+        <form onSubmit={(event) => handleSubmit(event)}>
             <div className="form-group">
                 <label htmlFor="first_name">First Name
                     <input
