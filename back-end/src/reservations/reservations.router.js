@@ -9,6 +9,7 @@ const controller = require("./reservations.controller");
 
 router
     .route("/")
-    .get(controller.list);
+    .get(controller.list)
+    .post(controller.post);
 
 module.exports = router;
