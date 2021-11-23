@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import useQuery from "../utils/useQuery";
 
 /**
  * Defines the dashboard page.
@@ -11,6 +12,9 @@ import ErrorAlert from "../layout/ErrorAlert";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const query = useQuery();
+  const dateQuery = query.get("date");
+  if(dateQuery){ date = dateQuery; }
 
   useEffect(loadDashboard, [date]);
 
