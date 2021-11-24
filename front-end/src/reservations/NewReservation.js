@@ -96,7 +96,7 @@ function NewReservation({ date }) {
                     name="mobile_number" 
                     type="tel" 
                     placeholder="123-456-7890" 
-                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                    pattern="[0-9]{3}-[0-9]{4}"
                     value={reservation.mobile_number}
                     onChange={changeHandler}
                     />

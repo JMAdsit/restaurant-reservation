@@ -10,7 +10,7 @@ async function list(req, res) {
 }
 
 async function post(req, res) {
-  const data = await service.post(req.body.data);
+  const data = await service.post(req.body);
   res.json({ data: data });
 }
 
