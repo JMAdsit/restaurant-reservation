@@ -30,6 +30,7 @@ function NewReservation({ date }) {
     async function handleSubmit(reservation, event) {
         event.preventDefault();
         try {
+            reservation.people = parseInt(reservation.people);
             await createReservation(reservation);
             history.push(`/dashboard?date=${reservation.reservation_date}`)
         } catch(error) {
@@ -95,7 +96,7 @@ function NewReservation({ date }) {
                     id="mobile_number"
                     name="mobile_number" 
                     type="tel" 
-                    placeholder="123-456-7890" 
+                    placeholder="123-4567" 
                     pattern="[0-9]{3}-[0-9]{4}"
                     value={reservation.mobile_number}
                     onChange={changeHandler}
