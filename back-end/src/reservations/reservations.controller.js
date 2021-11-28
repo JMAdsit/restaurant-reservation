@@ -15,36 +15,75 @@ const validProperties = [
 
 
 function hasValidProperties(req, res, next) {
+  //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
-  if(!req.body) { 
-    next({ status: 400, message: `Requires request body.` });
-  }
+  let data = req.body;
+
+  //date and time regex
   let dateRegex = /[0-9]{4}-[0-9]{2}-[0-9]{2}/;
   let timeRegex = /[0-9]{2}:[0-9]{2}/;
+
+  //error if no data
+  if(!data) { 
+    next({ status: 400, message: `Requires request body.` });
+  }
   
+  //confirms properties exist and have appropriate values
   validProperties.forEach((prop) => {
-    if(!req.body[prop]){
+    if(!data[prop]){
       next({ status: 400, message: `Requires ${prop}.` });
     }
-    if(prop === "reservation_date" && !dateRegex.test(req.body.reservation_date)) {
+    if(prop === "reservation_date" && !dateRegex.test(data.reservation_date)) {
       next({ status: 400, message: `Requires ${prop}.` });
     }
-    if(prop === "reservation_time" && !timeRegex.test(req.body.reservation_time)) {
+    if(prop === "reservation_time" && !timeRegex.test(data.reservation_time)) {
       next({ status: 400, message: `Requires ${prop}.` });
     }
-    if(prop === "people" && !Number.isInteger(req.body.people)) {
+    if(prop === "people" && !Number.isInteger(data.people)) {
       next({ status: 400, message: `Requires ${prop}.` });
     }
   })
+
   next();
 }
 
 function hasOnlyValidProperties(req, res, next) {
-  // req.body.forEach((prop) => {
-  //   if(!validProperties.includes(prop)) {
-  //     next({ status: 400, "message": `${prop} is not a valid property.` })
-  //   }
-  // })
+  //get data regardless of api style
+  if(req.body.data){ req.body = req.body.data; }
+  let data = req.body;
+
+  //confirm no unexpected properties exist
+  for(const prop in data) {
+    if(!validProperties.includes(prop)) {
+      next({ status: 400, message: `${prop} is not a valid property.` })
+    }
+  }
+
+  next();
+}
+
+function onlyValidDates(req, res, next) {
+  //get data regardless of api style
+  if(req.body.data){ req.body = req.body.data; }
+  let data = req.body;
+
+  //get day of the week
+  const d = new Date(`${data.reservation_date} ${data.reservation_time}`);
+  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let day = weekday[d.getDay()];
+
+  if(day === "Tuesday" && d < new Date()) {
+    next({ status: 400, message: `Cannot schedule in the past or on Tuesdays.` })
+  }
+
+  if(day === "Tuesday") {
+    next({ status: 400, message: `Restaurant is closed on Tuesdays.` })
+  }
+
+  if(d < new Date()) {
+    next({ status: 400, message: `Must schedule in the future.` })
+  }
+
   next();
 }
 
@@ -61,5 +100,5 @@ async function post(req, res) {
 
 module.exports = {
   list,
-  post: [hasValidProperties, hasOnlyValidProperties, post],
-};
+  post: [hasValidProperties, hasOnlyValidProperties, onlyValidDates, post],
+}
