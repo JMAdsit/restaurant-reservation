@@ -33,11 +33,11 @@ function NewReservation({ date }) {
         event.preventDefault();
 
         //get day of the week
-        const d = new Date(`${reservation.reservation_date} ${reservation.reservation_time}`);
+        const rdate = new Date(`${reservation.reservation_date} ${reservation.reservation_time}`);
         const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        let day = weekday[d.getDay()];
+        let day = weekday[rdate.getDay()];
 
-        if(day === "Tuesday" && d < new Date()) {
+        if(day === "Tuesday" && rdate < new Date()) {
             const error = { status: 400, message: `Cannot schedule in the past or on Tuesdays.` }; 
             setErrorState(error);
             return;
@@ -49,8 +49,20 @@ function NewReservation({ date }) {
             return;
         }
 
-        if(d < new Date()) {
+        if(rdate < new Date()) {
             const error = { status: 400, message: `Must schedule in the future.` }; 
+            setErrorState(error);
+            return;
+        }
+        
+        if(reservation.reservation_time > "21:30"){
+            const error = { status: 400, message: `Must schedule before 9:30 PM.` }; 
+            setErrorState(error);
+            return;
+        }
+
+        if(reservation.reservation_time < "10:30"){
+            const error = { status: 400, message: `Must schedule after 10:30 AM.` }; 
             setErrorState(error);
             return;
         }
@@ -64,25 +76,6 @@ function NewReservation({ date }) {
             setErrorState(error);
         }
     }
-
-    // //get current time and set default minimum date and time
-    // let cDate = new Date();
-    // let cHour = cDate.getHours();
-    // let cMinute = String(cDate.getMinutes()).padStart(2, '0');
-    // let cTime = `${cHour}:${cMinute}`;
-    // let minDate = date;
-    // let minTime = `10:30`;
-    
-    
-    // //disable today if after 9:30 PM
-    // if(cTime > `21:30`) {
-    //     minDate = next(date);
-    // }
-
-    // //adjust earliest reservation time for today
-    // // if(date === reservation.reservation_date) {
-    // //     minTime = cTime;
-    // // }
 
     return <div>
         <ErrorAlert error={errorState} />
@@ -152,7 +145,7 @@ function NewReservation({ date }) {
                     id="reservation_time"
                     name="reservation_time" 
                     type="time"
-                    max="21:30"
+                    // max="21:30"
                     value={reservation.reservation_time}
                     onChange={changeHandler}
                     />

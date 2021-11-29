@@ -68,11 +68,11 @@ function onlyValidDates(req, res, next) {
   let data = req.body;
 
   //get day of the week
-  const d = new Date(`${data.reservation_date} ${data.reservation_time}`);
+  const rDate = new Date(`${data.reservation_date} ${data.reservation_time}`);
   const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  let day = weekday[d.getDay()];
+  let day = weekday[rDate.getDay()];
 
-  if(day === "Tuesday" && d < new Date()) {
+  if(day === "Tuesday" && rDate < new Date()) {
     next({ status: 400, message: `Cannot schedule in the past or on Tuesdays.` })
   }
 
@@ -80,8 +80,16 @@ function onlyValidDates(req, res, next) {
     next({ status: 400, message: `Restaurant is closed on Tuesdays.` })
   }
 
-  if(d < new Date()) {
+  if(rDate < new Date()) {
     next({ status: 400, message: `Must schedule in the future.` })
+  }
+
+  if(data.reservation_time > "21:30:00"){
+    next({ status: 400, message: `Must schedule before 9:30 PM.` });
+  }
+
+  if(data.reservation_time < "10:30:00"){
+    next({ status: 400, message: `Must schedule after 10:30 AM.` });
   }
 
   next();
