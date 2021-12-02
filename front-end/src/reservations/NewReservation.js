@@ -12,7 +12,7 @@ function NewReservation({ date }) {
         "reservation_date": "",
         "reservation_time": "",
         "people": ""
-    })
+    });
     
     //handle changes in form input
     const changeHandler = event => {
