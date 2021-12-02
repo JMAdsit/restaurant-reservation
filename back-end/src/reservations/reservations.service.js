@@ -8,6 +8,13 @@ function list(date) {
         .then();
 }
 
+function read(id) {
+  return knex("reservations")
+        .where({ "reservation_id": id })
+        .first()
+        .then();
+}
+
 function post(data) {
     return knex("reservations")
         .insert(data)
@@ -17,5 +24,6 @@ function post(data) {
 
 module.exports = {
   list,
+  read,
   post
 }

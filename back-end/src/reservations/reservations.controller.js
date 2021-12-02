@@ -1,6 +1,3 @@
-/**
- * List handler for reservation resources
- */
 const service = require("./reservations.service");
 
 const validProperties = [
@@ -11,8 +8,6 @@ const validProperties = [
   "reservation_time",
   "people"
 ];
-
-
 
 function hasValidProperties(req, res, next) {
   //get data regardless of api style
@@ -25,22 +20,22 @@ function hasValidProperties(req, res, next) {
 
   //error if no data
   if(!data) { 
-    next({ status: 400, message: `Requires request body.` });
+    return next({ status: 400, message: `Requires request body.` });
   }
   
   //confirms properties exist and have appropriate values
   validProperties.forEach((prop) => {
     if(!data[prop]){
-      next({ status: 400, message: `Requires ${prop}.` });
+      return next({ status: 400, message: `Requires ${prop}.` });
     }
     if(prop === "reservation_date" && !dateRegex.test(data.reservation_date)) {
-      next({ status: 400, message: `Requires ${prop}.` });
+      return next({ status: 400, message: `Requires ${prop}.` });
     }
     if(prop === "reservation_time" && !timeRegex.test(data.reservation_time)) {
-      next({ status: 400, message: `Requires ${prop}.` });
+      return next({ status: 400, message: `Requires ${prop}.` });
     }
     if(prop === "people" && !Number.isInteger(data.people)) {
-      next({ status: 400, message: `Requires ${prop}.` });
+      return next({ status: 400, message: `Requires ${prop}.` });
     }
   })
 
@@ -55,11 +50,11 @@ function hasOnlyValidProperties(req, res, next) {
   //confirm no unexpected properties exist
   for(const prop in data) {
     if(!validProperties.includes(prop)) {
-      next({ status: 400, message: `${prop} is not a valid property.` })
+      return next({ status: 400, message: `${prop} is not a valid property.` })
     }
   }
 
-  next();
+  return next();
 }
 
 function onlyValidDates(req, res, next) {
@@ -72,33 +67,57 @@ function onlyValidDates(req, res, next) {
   const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   let day = weekday[rDate.getDay()];
 
+  //return error if date is a past Tuesday
   if(day === "Tuesday" && rDate < new Date()) {
-    next({ status: 400, message: `Cannot schedule in the past or on Tuesdays.` })
+    return next({ status: 400, message: `Cannot schedule in the past or on Tuesdays.` })
   }
 
+  //return error if it's Tuesday
   if(day === "Tuesday") {
-    next({ status: 400, message: `Restaurant is closed on Tuesdays.` })
+    return next({ status: 400, message: `Restaurant is closed on Tuesdays.` })
   }
 
+  //return error if date is in the past
   if(rDate < new Date()) {
-    next({ status: 400, message: `Must schedule in the future.` })
+    return next({ status: 400, message: `Must schedule in the future.` })
   }
 
+  //return error if time is after 9:30
   if(data.reservation_time > "21:30:00"){
-    next({ status: 400, message: `Must schedule before 9:30 PM.` });
+    return next({ status: 400, message: `Must schedule before 9:30 PM.` });
   }
 
+  //return error if time before opening
   if(data.reservation_time < "10:30:00"){
-    next({ status: 400, message: `Must schedule after 10:30 AM.` });
+    return next({ status: 400, message: `Must schedule after 10:30 AM.` });
   }
 
-  next();
+  return next();
 }
 
-async function list(req, res) {
+async function reservationExists(req, res, next) {
+  //get reservation
+  const reservation = await service.read(req.params.reservation_Id);
+
+  //if it exists, save reservation to locals and move to next
+  if(reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  } 
+
+  //return error if no reservation
+  return next({ status: 404, message: `Reservation ${req.params.reservation_Id} not found.` })
+}
+
+async function list(req, res, next) {
   const { date } = req.query;
   const data = await service.list(date);
   res.status(200).json({ data });
+}
+
+async function read(req, res) {
+  const data = res.locals.reservation;
+  res.json({ data });
 }
 
 async function post(req, res) {
@@ -108,5 +127,6 @@ async function post(req, res) {
 
 module.exports = {
   list,
+  read: [reservationExists, read],
   post: [hasValidProperties, hasOnlyValidProperties, onlyValidDates, post],
 }
