@@ -31,6 +31,7 @@ function NewReservation({ date }) {
     //handle submit button
     async function handleSubmit(reservation, event) {
         event.preventDefault();
+        setErrorState(null);
 
         //get day of the week
         const rdate = new Date(`${reservation.reservation_date} ${reservation.reservation_time}`);
