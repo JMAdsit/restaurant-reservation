@@ -97,7 +97,8 @@ function onlyValidDates(req, res, next) {
 
 async function reservationExists(req, res, next) {
   //get reservation
-  const reservation = await service.read(req.params.reservation_Id);
+  const {reservation_Id} = req.params;
+  const reservation = await service.read(reservation_Id);
 
   //if it exists, save reservation to locals and move to next
   if(reservation) {

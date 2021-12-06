@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
+import { createTable } from "../utils/api.js";
 
 function NewTable() {
     //declare table state
@@ -41,13 +42,13 @@ function NewTable() {
         }
 
 
-        // try {
-        //     reservation.people = parseInt(reservation.people);
-        //     await createReservation(reservation);
-        //     history.push(`/dashboard?date=${reservation.reservation_date}`)
-        // } catch(error) {
-        //     setErrorState(error);
-        // }
+        try {
+            table.capacity = parseInt(table.capacity);
+            await createTable(table);
+            history.push(`/`)
+        } catch(error) {
+            setErrorState(error);
+        }
     }
 
     return <div>

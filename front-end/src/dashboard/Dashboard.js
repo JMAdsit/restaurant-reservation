@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import useQuery from "../utils/useQuery";
+import ReservationList from "../reservations/ReservationDisplay";
+import TableList from "../tables/TableDisplay";
 
 /**
  * Defines the dashboard page.
@@ -11,14 +13,17 @@ import useQuery from "../utils/useQuery";
  */
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
+  const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tablesError, setTablesError] = useState(null);
   const query = useQuery();
   const dateQuery = query.get("date");
   if(dateQuery){ date = dateQuery; }
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadReservations, [date]);
+  useEffect(loadTables, [date]);
 
-  function loadDashboard() {
+  function loadReservations() {
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
@@ -27,14 +32,25 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  function loadTables() {
+    const abortController = new AbortController();
+    setTablesError(null);
+    listTables({ date }, abortController.signal)
+      .then(setTables)
+      .catch(setTablesError);
+    return () => abortController.abort();
+  }
+
   return (
     <main>
       <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
-      </div>
       <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+      <ErrorAlert error={tablesError} />
+      <div className="d-md-flex mb-3">
+        <h4 className="mb-0">Reservations for {date}</h4>
+      </div>
+      <ReservationList reservations={reservations} />
+      <TableList tables={tables} />
     </main>
   );
 }

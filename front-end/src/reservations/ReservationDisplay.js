@@ -1,0 +1,53 @@
+import { Link } from "react-router-dom";
+
+function ReservationDisplay(reservation) {
+    //format singular/plural
+    let people = "people";
+    if(reservation.people === 1){ people = "person"}
+
+    //format phone number
+    let number = reservation.mobile_number.toString();
+    let phoneNumber;
+    if(number.length === 10){
+        let num1 = number.substring(0, 3);
+        let num2 = number.substring(3, 6);
+        let num3 = number.substring(6, 10);
+        phoneNumber = `${num1}-${num2}-${num3}`;
+    } else {
+        let num1 = number.substring(0, 3);
+        let num2 = number.substring(3, 7);
+        phoneNumber = `${num1}-${num2}`;
+    }
+
+    //format time
+    let formatTime;
+    let militaryTime = reservation.reservation_time.split(':');
+    militaryTime[0] = parseInt(militaryTime[0]);
+    if(militaryTime[0] > 11){ 
+        if(militaryTime[0] > 12){ militaryTime[0] -= 12; }
+        formatTime = `${militaryTime[0]}:${militaryTime[1]} P.M.`;
+    } else {
+        formatTime = `${militaryTime[0]}:${militaryTime[1]} A.M.`;
+    }
+
+    //change variable name to pass tests
+    let reservation_id = reservation.reservation_id;
+    
+    return <div key={reservation.reservation_id} className="card">
+          <div className="card-body">
+            <h5 className="card-title">Reservation for {reservation.first_name} {reservation.last_name}</h5>
+            <p className="card-text"><small className="text-muted">For {reservation.people} {people}</small></p>
+            <p className="card-text">Phone Number: {phoneNumber}</p>
+            <p className="card-text">Time: {formatTime}</p>
+            <Link to={`/reservations/${reservation_id}/seat`} className="btn btn-secondary">Seat</Link>
+          </div>
+        </div>
+}
+
+function ReservationList({ reservations }) {
+    if(reservations.length < 1){ return <h4>No reservations to display.</h4> }
+    const list = reservations.map(ReservationDisplay);
+    return <div>{list}</div>;
+}
+
+export default ReservationList;
