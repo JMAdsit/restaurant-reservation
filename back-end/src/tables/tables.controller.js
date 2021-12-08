@@ -63,6 +63,25 @@ async function validTable(req, res, next) {
     return next();
 }
 
+async function seatingOccupied(req, res, next) {
+    //get table
+    let tableId = req.params.table_id
+    let table = await service.read(tableId);
+
+    //return error if seat doesn't exist
+    if(!table) {
+        return next({ status: 404, message: `Table ${tableId} does not exist.` })
+    }
+
+    //confirm table is occupied
+    if(table.reservation_id){
+        res.locals.table_id = tableId;
+        return next();
+    }
+
+    return next({ status: 400, message: `Table is not occupied.` })
+}
+
 async function list(req, res) {
     const { date } = req.query;
     const data = await service.list(date);
@@ -78,11 +97,19 @@ async function update(req, res) {
     let reservationId = res.locals.reservation.reservation_id;
     let tableId = req.params.table_id;
     const data = await service.update(tableId, reservationId);
-    res.status(200).json({ data: data })
+    res.status(200).json({ data: data });
+}
+
+async function unseat(req, res) {
+    let reservationId = null;
+    let tableId = res.locals.table_id;
+    const data = await service.update(tableId, reservationId);
+    res.status(200).json({ data: data });
 }
 
 module.exports = {
     list,
     update: [validReservation, validTable, update],
     post: [hasValidProperties, post],
+    unseat: [seatingOccupied, unseat],
   }
