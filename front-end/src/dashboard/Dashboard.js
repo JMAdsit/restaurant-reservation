@@ -50,7 +50,7 @@ function Dashboard({ date }) {
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <ReservationList reservations={reservations} />
-      <TableList tables={tables} />
+      <TableList tables={tables} loadTables={loadTables} date={date}/>
     </main>
   );
 }
