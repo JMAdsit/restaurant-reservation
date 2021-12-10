@@ -50,6 +50,12 @@ function hasOnlyValidProperties(req, res, next) {
   //confirm no unexpected properties exist
   for(const prop in data) {
     if(!validProperties.includes(prop)) {
+      if(prop === "status") { 
+        if(data.status !== "booked"){
+          return next({ status: 400, message: `Status cannot be initiated as ${data.status}.` })
+        }
+        continue; 
+      }
       return next({ status: 400, message: `${prop} is not a valid property.` })
     }
   }
@@ -110,6 +116,24 @@ async function reservationExists(req, res, next) {
   return next({ status: 404, message: `Reservation ${req.params.reservation_Id} not found.` })
 }
 
+async function validStatus(req, res, next) {
+  //get data regardless of api style
+  if(req.body.data){ req.body = req.body.data; }
+  let data = req.body;
+
+  const reservation = res.locals.reservation;
+
+  if(data.status !== "booked" && data.status !== "seated" && data.status !== "finished"){
+    return next({ status: 400, message: `${data.status} is not a valid status.`})
+  }
+
+  if(reservation.status === "finished") {
+    return next({ status: 400, message: `Cannot change status of finished reservation.`})
+  }
+
+  next();
+}
+
 async function list(req, res, next) {
   const { date } = req.query;
   const data = await service.list(date);
@@ -126,8 +150,15 @@ async function post(req, res) {
   res.status(201).json({ data: data });
 }
 
+async function updateStatus(req, res) {
+  const reservation = res.locals.reservation;
+  const data = await service.updateStatus(req.body.status, reservation.reservation_id);
+  res.status(200).json({ data: data });
+}
+
 module.exports = {
   list,
   read: [reservationExists, read],
   post: [hasValidProperties, hasOnlyValidProperties, onlyValidDates, post],
+  updateStatus: [reservationExists, validStatus, updateStatus]
 }

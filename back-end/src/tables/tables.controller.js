@@ -1,4 +1,5 @@
 const service = require("./tables.service");
+const resService = require("../reservations/reservations.service");
 
 function hasValidProperties(req, res, next) {
     //get data regardless of api style
@@ -33,15 +34,22 @@ async function validReservation(req, res, next) {
         return next({ status: 400, message: `Requires reservation_id.` });
     }
 
-    //get confirm reservation exists and save it in locals
+    //get reservation
     const reservation = await service.readRes(data.reservation_id);
-    if(reservation){
-        res.locals.reservation = reservation;
-        return next();
-    }
-    
+
     //return error if reservation doesn't exist
-    return next({ status: 404, message: `Reservation ${data.reservation_id} not found.` });
+    if(!reservation) {
+        return next({ status: 404, message: `Reservation ${data.reservation_id} not found.` });
+    }
+
+    //confirm reservation isn't seated
+    if(reservation.status !== "booked") {
+        return next({ status: 400, message: `Reservation ${data.reservation_id} has already been seated.` })
+    }    
+    
+    //get confirm reservation exists and save it in locals
+    res.locals.reservation = reservation;
+    return next();
 }
 
 async function validTable(req, res, next) {
@@ -75,7 +83,7 @@ async function seatingOccupied(req, res, next) {
 
     //confirm table is occupied
     if(table.reservation_id){
-        res.locals.table_id = tableId;
+        res.locals.table = table;
         return next();
     }
 
@@ -93,23 +101,27 @@ async function post(req, res) {
     res.status(201).json({ data: data });
 }
 
-async function update(req, res) {
+async function seat(req, res) {
     let reservationId = res.locals.reservation.reservation_id;
     let tableId = req.params.table_id;
+    
     const data = await service.update(tableId, reservationId);
+    await resService.updateStatus("seated", reservationId);
     res.status(200).json({ data: data });
 }
 
 async function unseat(req, res) {
+    let table = res.locals.table;
     let reservationId = null;
-    let tableId = res.locals.table_id;
-    const data = await service.update(tableId, reservationId);
+
+    await resService.updateStatus("finished", table.reservation_id);   
+    const data = await service.update(table.table_id, reservationId);
     res.status(200).json({ data: data });
 }
 
 module.exports = {
     list,
-    update: [validReservation, validTable, update],
+    seat: [validReservation, validTable, seat],
     post: [hasValidProperties, post],
     unseat: [seatingOccupied, unseat],
   }

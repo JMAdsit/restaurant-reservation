@@ -5,8 +5,18 @@ function ReservationDisplay(reservation) {
     let people = "people";
     if(reservation.people === 1){ people = "person"}
 
+    //seat button
+    function SeatButton() {
+        if(reservation.status !== "booked") { return null; }
+
+        //change variable name to pass tests
+        let reservation_id = reservation.reservation_id;
+
+        return <Link to={`/reservations/${reservation_id}/seat`} className="btn btn-secondary">Seat</Link>
+    }
+
     //format phone number
-    let number = reservation.mobile_number.toString();
+    let number = reservation.mobile_number.toString().split('-').join('');
     let phoneNumber;
     if(number.length === 10){
         let num1 = number.substring(0, 3);
@@ -29,9 +39,6 @@ function ReservationDisplay(reservation) {
     } else {
         formatTime = `${militaryTime[0]}:${militaryTime[1]} A.M.`;
     }
-
-    //change variable name to pass tests
-    let reservation_id = reservation.reservation_id;
     
     return <div key={reservation.reservation_id} className="card">
           <div className="card-body">
@@ -39,7 +46,8 @@ function ReservationDisplay(reservation) {
             <p className="card-text"><small className="text-muted">For {reservation.people} {people}</small></p>
             <p className="card-text">Phone Number: {phoneNumber}</p>
             <p className="card-text">Time: {formatTime}</p>
-            <Link to={`/reservations/${reservation_id}/seat`} className="btn btn-secondary">Seat</Link>
+            <p className="card-text" data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status}</p>
+            <SeatButton />
           </div>
         </div>
 }
