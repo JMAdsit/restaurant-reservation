@@ -9,6 +9,15 @@ function list(date) {
         .then();
 }
 
+function listByPhone(mobile_number) {
+  return knex("reservations")
+    .whereRaw(
+      "translate(mobile_number, '() -', '') like ?",
+      `%${mobile_number.replace(/\D/g, "")}%`
+    )
+    .orderBy("reservation_date");
+}
+
 function read(reservationId) {
   return knex("reservations")
         .where({ "reservation_id": reservationId })
@@ -33,6 +42,7 @@ function updateStatus(status, reservationId) {
 
 module.exports = {
   list,
+  listByPhone,
   read,
   post,
   updateStatus

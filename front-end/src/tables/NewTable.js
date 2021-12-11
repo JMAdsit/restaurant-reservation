@@ -41,7 +41,6 @@ function NewTable() {
             return;
         }
 
-
         try {
             table.capacity = parseInt(table.capacity);
             await createTable(table);

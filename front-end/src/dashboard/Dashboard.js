@@ -16,6 +16,7 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tablesError, setTablesError] = useState(null);
+
   const query = useQuery();
   const dateQuery = query.get("date");
   if(dateQuery){ date = dateQuery; }
@@ -46,11 +47,9 @@ function Dashboard({ date }) {
       <h1>Dashboard</h1>
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={tablesError} />
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for {date}</h4>
-      </div>
-      <ReservationList reservations={reservations} />
-      <TableList tables={tables} loadTables={loadTables} date={date}/>
+      <ReservationList date={date} reservations={reservations} />
+      <h4 className="mb-0">Tables{date}</h4>
+      <TableList tables={tables} date={date}/>
     </main>
   );
 }
