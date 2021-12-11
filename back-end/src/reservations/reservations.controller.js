@@ -135,9 +135,14 @@ async function validStatus(req, res, next) {
 }
 
 async function list(req, res, next) {
-  const { date } = req.query;
-  const data = await service.list(date);
-  res.status(200).json({ data });
+  const { date, mobile_number } = req.query;
+  if(mobile_number) {
+    const data = await service.listByPhone(mobile_number);
+    res.status(200).json({ data });
+  } else {
+    const data = await service.list(date);
+    res.status(200).json({ data });
+  }
 }
 
 async function read(req, res) {

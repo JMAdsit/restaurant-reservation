@@ -45,6 +45,7 @@ function ReservationDisplay(reservation) {
             <h5 className="card-title">Reservation for {reservation.first_name} {reservation.last_name}</h5>
             <p className="card-text"><small className="text-muted">For {reservation.people} {people}</small></p>
             <p className="card-text">Phone Number: {phoneNumber}</p>
+            <p className="card-text">Date: {reservation.reservation_date}</p>
             <p className="card-text">Time: {formatTime}</p>
             <p className="card-text" data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status}</p>
             <SeatButton />
@@ -52,10 +53,25 @@ function ReservationDisplay(reservation) {
         </div>
 }
 
-function ReservationList({ reservations }) {
-    if(reservations.length < 1){ return <h4>No reservations to display.</h4> }
+function ReservationList({ date, phoneQuery, reservations }) {
+    //check for no data
+    if(reservations.length < 1){ return <h4>No reservations found.</h4> }
+
+    //generate reservation displays
     const list = reservations.map(ReservationDisplay);
-    return <div>{list}</div>;
+
+    //check for type of list
+    let listType = date;
+    if(phoneQuery) {
+        listType = phoneQuery;
+    }
+
+    return <div>
+        <div className="d-md-flex mb-3">
+        <h4 className="mb-0">Reservations for {listType}</h4>
+        </div>
+        {list}
+    </div>;
 }
 
 export default ReservationList;

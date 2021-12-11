@@ -1,6 +1,7 @@
 import { clearTable } from "../utils/api";
+import { useHistory } from "react-router-dom";
 
-function TableList({ tables, loadTables, date }) {
+function TableList({ tables }) {
     //display function for each table
     function TableDisplay(table) {
         //check for occupancy
@@ -9,6 +10,8 @@ function TableList({ tables, loadTables, date }) {
             occupancy = "Occupied";
         }
 
+        
+    const history = useHistory();
         //handle finish button
         async function handleFinish(event) {
             event.preventDefault();
@@ -16,7 +19,7 @@ function TableList({ tables, loadTables, date }) {
             if(window.confirm("Is this table ready to seat new guests? This cannot be undone.")){
                 try {
                     await clearTable(table.table_id);
-                    await loadTables();
+                    history.go(0);
                 } catch(error) {
                     console.log(error);
                 }
