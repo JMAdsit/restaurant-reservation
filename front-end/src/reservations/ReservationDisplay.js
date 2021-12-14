@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { updateStatus } from "../utils/api";
 
 function ReservationDisplay(reservation) {
+    const history = useHistory();
     //format singular/plural
     let people = "people";
     if(reservation.people === 1){ people = "person"}
@@ -9,10 +12,29 @@ function ReservationDisplay(reservation) {
     function SeatButton() {
         if(reservation.status !== "booked") { return null; }
 
-        //change variable name to pass tests
         let reservation_id = reservation.reservation_id;
-
         return <Link to={`/reservations/${reservation_id}/seat`} className="btn btn-secondary">Seat</Link>
+    }
+
+    //edit button
+    function EditButton() {
+        if(reservation.status !== "booked") {return null;}
+        let reservation_id = reservation.reservation_id;
+        return <Link to={`/reservations/${reservation_id}/edit`} className="btn btn-secondary">Edit</Link>
+    }
+
+    //handle cancel button
+    async function handleCancel(event) {
+        event.preventDefault();
+        if(window.confirm("Do you want to cancel this reservation? This cannot be undone.")){
+            try {
+                const data = {status: "cancelled"};
+                await updateStatus(data, reservation.reservation_id);
+                history.go(0);
+            } catch(error) {
+                console.log(error);
+            }
+        }
     }
 
     //format phone number
@@ -48,6 +70,8 @@ function ReservationDisplay(reservation) {
             <p className="card-text">Date: {reservation.reservation_date}</p>
             <p className="card-text">Time: {formatTime}</p>
             <p className="card-text" data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status}</p>
+            <button onClick={(event) => handleCancel(event)} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-secondary">Cancel</button>
+            <EditButton />
             <SeatButton />
           </div>
         </div>

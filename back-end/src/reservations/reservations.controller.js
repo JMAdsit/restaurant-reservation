@@ -56,6 +56,7 @@ function hasOnlyValidProperties(req, res, next) {
         }
         continue; 
       }
+      if(prop === "reservation_id" || prop === "created_at" || prop === "updated_at") {continue;}
       return next({ status: 400, message: `${prop} is not a valid property.` })
     }
   }
@@ -123,8 +124,12 @@ async function validStatus(req, res, next) {
 
   const reservation = res.locals.reservation;
 
-  if(data.status !== "booked" && data.status !== "seated" && data.status !== "finished"){
+  if(data.status !== "booked" && data.status !== "seated" && data.status !== "finished" && data.status !== "cancelled"){
     return next({ status: 400, message: `${data.status} is not a valid status.`})
+  }
+
+  if(data.status === "cancelled" && reservation.status !== "booked") {
+    return next({ status: 400, message: "Only reservations that are booked can be cancelled."})
   }
 
   if(reservation.status === "finished") {
@@ -161,9 +166,15 @@ async function updateStatus(req, res) {
   res.status(200).json({ data: data });
 }
 
+async function put(req, res) {
+  const data = await service.put(req.body);
+  res.status(200).json({ data: data });
+}
+
 module.exports = {
   list,
   read: [reservationExists, read],
   post: [hasValidProperties, hasOnlyValidProperties, onlyValidDates, post],
-  updateStatus: [reservationExists, validStatus, updateStatus]
+  updateStatus: [reservationExists, validStatus, updateStatus],
+  put: [reservationExists, hasValidProperties, hasOnlyValidProperties, onlyValidDates, put]
 }

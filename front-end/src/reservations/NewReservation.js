@@ -1,10 +1,11 @@
-import React, {useState} from "react";
-import { useHistory } from "react-router-dom";
-import { createReservation } from "../utils/api.js";
+import React, {useState, useEffect} from "react";
+import { useParams, useHistory } from "react-router-dom";
+import { createReservation, readReservation, updateReservation } from "../utils/api.js";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function NewReservation({ date }) {
     //declare reservation state
+    let [errorState, setErrorState] = useState(null);
     let [reservation, setReservation] = useState({ 
         "first_name": "", 
         "last_name": "", 
@@ -14,12 +15,23 @@ function NewReservation({ date }) {
         "people": ""
     });
     
+    //check for reservation and load it if it exists
+    const { reservation_Id } = useParams();
+    function loadReservation() {
+        if(!reservation_Id) { return; }
+        const abortController = new AbortController();
+        readReservation({reservation_Id}, abortController.signal)
+          .then(setReservation)
+          .catch(setErrorState);
+        return () => abortController.abort();
+    }
+    useEffect(loadReservation, [reservation_Id]);
+    
     //handle changes in form input
     const changeHandler = event => {
         setReservation({ ...reservation, [event.target.name]: event.target.value })
     }
 
-    let [errorState, setErrorState] = useState(null);
 
     //handle cancel button
     const history = useHistory();
@@ -68,13 +80,22 @@ function NewReservation({ date }) {
             return;
         }
 
-
-        try {
-            reservation.people = parseInt(reservation.people);
-            await createReservation(reservation);
-            history.push(`/dashboard?date=${reservation.reservation_date}`)
-        } catch(error) {
-            setErrorState(error);
+        if(reservation_Id) {
+            try {
+                reservation.people = parseInt(reservation.people);
+                await updateReservation(reservation);
+                history.push(`/dashboard?date=${reservation.reservation_date}`);
+            } catch(error) {
+                setErrorState(error);
+            }
+        } else {
+            try {
+                reservation.people = parseInt(reservation.people);
+                await createReservation(reservation);
+                history.push(`/dashboard?date=${reservation.reservation_date}`);
+            } catch(error) {
+                setErrorState(error);
+            }
         }
     }
 
@@ -119,7 +140,7 @@ function NewReservation({ date }) {
                     name="mobile_number" 
                     type="tel" 
                     placeholder="1234567890" 
-                    pattern="[0-9]{7-10}"
+                    // pattern="[0-9]{7-10}"
                     value={reservation.mobile_number}
                     onChange={changeHandler}
                     />
@@ -146,7 +167,6 @@ function NewReservation({ date }) {
                     id="reservation_time"
                     name="reservation_time" 
                     type="time"
-                    // max="21:30"
                     value={reservation.reservation_time}
                     onChange={changeHandler}
                     />
