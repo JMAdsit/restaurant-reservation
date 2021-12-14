@@ -4,6 +4,7 @@ const knex = require("../db/connection");
 function list(date) {
   return knex("reservations")
         .whereNot({ status: "finished" })
+        .andWhereNot({ status: "cancelled" })
         .andWhere({ "reservation_date": date })
         .orderBy("reservation_time", "asc")
         .then();
@@ -40,10 +41,19 @@ function updateStatus(status, reservationId) {
         .then((records) => records[0]);
 }
 
+function put(reservation) {
+  return knex("reservations")
+        .where({ "reservation_id": reservation.reservation_id })
+        .update(reservation)
+        .returning("*")
+        .then((records) => records[0]);
+}
+
 module.exports = {
   list,
   listByPhone,
   read,
   post,
-  updateStatus
+  updateStatus,
+  put,
 }

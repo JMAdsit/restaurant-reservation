@@ -48,7 +48,7 @@ function Dashboard({ date }) {
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={tablesError} />
       <ReservationList date={date} reservations={reservations} />
-      <h4 className="mb-0">Tables{date}</h4>
+      <h4 className="mb-0">Tables</h4>
       <TableList tables={tables} date={date}/>
     </main>
   );

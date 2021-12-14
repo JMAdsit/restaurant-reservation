@@ -28,6 +28,9 @@ function Routes() {
       <Route exact={true} path="/reservations/new">
         <NewReservation date={today()} />
       </Route>
+      <Route exact={true} path="/reservations/:reservation_Id/edit">
+        <NewReservation />
+      </Route>
       <Route exact={true} path="/search">
         <SearchReservations />
       </Route>
