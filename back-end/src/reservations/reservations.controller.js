@@ -143,15 +143,20 @@ async function list(req, res, next) {
   const { date, mobile_number } = req.query;
   if(mobile_number) {
     const data = await service.listByPhone(mobile_number);
+    data.forEach((reservation) => {
+      reservation.reservation_date = reservation.reservation_date.toISOString().split("T")[0]});
     res.status(200).json({ data });
   } else {
     const data = await service.list(date);
+    data.forEach((reservation) => {
+      reservation.reservation_date = reservation.reservation_date.toISOString().split("T")[0]});
     res.status(200).json({ data });
   }
 }
 
 async function read(req, res) {
   const data = res.locals.reservation;
+  data.reservation_date = data.reservation_date.toISOString().split("T")[0];
   res.json({ data });
 }
 
