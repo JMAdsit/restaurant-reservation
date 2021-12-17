@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { createReservation, readReservation, updateReservation } from "../utils/api.js";
 import ErrorAlert from "../layout/ErrorAlert";
 
-function NewReservation({ date }) {
+function ReservationForm({ date }) {
     //declare reservation state
     let [errorState, setErrorState] = useState(null);
     let [reservation, setReservation] = useState({ 
@@ -50,36 +50,42 @@ function NewReservation({ date }) {
         const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let day = weekday[rdate.getDay()];
 
+        //returns error for Tuesdays in the past
         if(day === "Tuesday" && rdate < new Date()) {
             const error = { status: 400, message: `Cannot schedule in the past or on Tuesdays.` }; 
             setErrorState(error);
             return;
         }
 
+        //returns error for Tuesdays
         if(day === "Tuesday") {
             const error = { status: 400, message: `Restaurant is closed on Tuesdays.` }; 
             setErrorState(error);
             return;
         }
 
+        //returns error for past date
         if(rdate < new Date()) {
             const error = { status: 400, message: `Must schedule in the future.` }; 
             setErrorState(error);
             return;
         }
         
+        //return error for scheduling too late
         if(reservation.reservation_time > "21:30"){
             const error = { status: 400, message: `Must schedule before 9:30 PM.` }; 
             setErrorState(error);
             return;
         }
 
+        //returns error for scheduling too early
         if(reservation.reservation_time < "10:30"){
             const error = { status: 400, message: `Must schedule after 10:30 AM.` }; 
             setErrorState(error);
             return;
         }
 
+        //determines if reservation form is called to edit or create a reservation
         if(reservation_Id) {
             try {
                 reservation.people = parseInt(reservation.people);
@@ -192,4 +198,4 @@ function NewReservation({ date }) {
     </div>
 }
 
-export default NewReservation;
+export default ReservationForm;

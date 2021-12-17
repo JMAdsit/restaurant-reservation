@@ -11,6 +11,7 @@ function SearchReservations() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [errorState, setErrorState] = useState(null);
 
+    //get query and load reservations that match it
     const query = useQuery();
     const phoneQuery = query.get("mobile_number");
 
@@ -48,13 +49,14 @@ function SearchReservations() {
 
     return <div>
     <ErrorAlert error={errorState} />
-    <h2>Search for reservations</h2>
+    <h2>Search for Reservations</h2>
     <form onSubmit={(event) => handleSubmit(event)}>
         <div className="form-group">
             <label htmlFor="mobile_number">Phone Number
                 <input
                 required
-                className="form-control" 
+                className="form-control"
+                size="30"
                 id="mobile_number"
                 name="mobile_number" 
                 type="text" 

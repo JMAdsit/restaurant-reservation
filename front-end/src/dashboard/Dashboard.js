@@ -19,7 +19,7 @@ function Dashboard({ date }) {
 
   const query = useQuery();
   const dateQuery = query.get("date");
-  if(dateQuery){ date = dateQuery; }
+  if(dateQuery) date = dateQuery;
 
   useEffect(loadReservations, [date]);
   useEffect(loadTables, [date]);
@@ -48,7 +48,6 @@ function Dashboard({ date }) {
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={tablesError} />
       <ReservationList date={date} reservations={reservations} />
-      <h4 className="mb-0">Tables</h4>
       <TableList tables={tables} date={date}/>
     </main>
   );

@@ -4,19 +4,19 @@ const resService = require("../reservations/reservations.service");
 function hasValidProperties(req, res, next) {
     //get data regardless of api style
     if(req.body.data){ req.body = req.body.data; }
-    let data = req.body;
+    const data = req.body;
 
-    //error if no data
+    //return error if no data
     if(!data) { 
         return next({ status: 400, message: `Requires request body, including table_name and capacity.` });
     }
 
-    //error if table name is too short
+    //return error if table name is too short
     if(!data.table_name || data.table_name.length < 2) {
         return next({ status: 400, message: `Requires table_name to be at least 2 characters.` });
     }
     
-    //error if capacity is not a number or less than 1
+    //return error if capacity is not a number or less than 1
     if(!data.capacity || !Number.isInteger(data.capacity) || data.capacity < 1) {
         return next({ status: 400, message: `Requires capacity to be at least 1.` });
     }
@@ -27,9 +27,9 @@ function hasValidProperties(req, res, next) {
 async function validReservation(req, res, next) {
     //get data regardless of api style
     if(req.body.data){ req.body = req.body.data; }
-    let data = req.body;
+    const data = req.body;
 
-    //error if there's not reservation id
+    //return error if there's no reservation id
     if(!data || !data.reservation_id) {
         return next({ status: 400, message: `Requires reservation_id.` });
     }
@@ -47,16 +47,15 @@ async function validReservation(req, res, next) {
         return next({ status: 400, message: `Reservation ${data.reservation_id} has already been seated.` })
     }    
     
-    //get confirm reservation exists and save it in locals
     res.locals.reservation = reservation;
     return next();
 }
 
 async function validTable(req, res, next) {
     //get variables
-    let reservation = res.locals.reservation;
-    let tableId = req.params.table_id;
-    let table = await service.read(tableId);
+    const reservation = res.locals.reservation;
+    const tableId = req.params.table_id;
+    const table = await service.read(tableId);
     
     //return error if table capacity is smaller than reservation size
     if(table.capacity < reservation.people){
@@ -73,8 +72,8 @@ async function validTable(req, res, next) {
 
 async function seatingOccupied(req, res, next) {
     //get table
-    let tableId = req.params.table_id
-    let table = await service.read(tableId);
+    const tableId = req.params.table_id
+    const table = await service.read(tableId);
 
     //return error if seat doesn't exist
     if(!table) {
@@ -102,8 +101,9 @@ async function post(req, res) {
 }
 
 async function seat(req, res) {
-    let reservationId = res.locals.reservation.reservation_id;
-    let tableId = req.params.table_id;
+    //get variables
+    const reservationId = res.locals.reservation.reservation_id;
+    const tableId = req.params.table_id;
     
     const data = await service.update(tableId, reservationId);
     await resService.updateStatus("seated", reservationId);
@@ -111,8 +111,8 @@ async function seat(req, res) {
 }
 
 async function unseat(req, res) {
-    let table = res.locals.table;
-    let reservationId = null;
+    const table = res.locals.table;
+    const reservationId = null;
 
     await resService.updateStatus("finished", table.reservation_id);   
     const data = await service.update(table.table_id, reservationId);

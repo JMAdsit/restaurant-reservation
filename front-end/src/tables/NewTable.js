@@ -4,7 +4,8 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { createTable } from "../utils/api.js";
 
 function NewTable() {
-    //declare table state
+    //declare states
+    let [errorState, setErrorState] = useState(null);
     let [table, setTable] = useState({
         "table_name": "",
         "capacity": ""
@@ -14,9 +15,6 @@ function NewTable() {
     const changeHandler = event => {
         setTable({ ...table, [event.target.name]: event.target.value });
     }
-
-    let [errorState, setErrorState] = useState(null);
-    
     
     //handle cancel button
     const history = useHistory();
@@ -29,18 +27,21 @@ function NewTable() {
     async function handleSubmit(table, event) {
         event.preventDefault();
 
+        //return error if name is too short
         if(table.table_name.length < 2) {
             const error = { status: 400, message: `Table name must be at least two characters.` }; 
             setErrorState(error);
             return;
         }
 
+        //return error if capacity less than one
         if(table.capacity < 1) {
             const error = { status: 400, message: `Must have at least one capacity.` }; 
             setErrorState(error);
             return;
         }
 
+        //make push request
         try {
             table.capacity = parseInt(table.capacity);
             await createTable(table);
