@@ -2,3 +2,29 @@
   background-color: #393a44;
   min-width: 200px;
 }
+
+body{	
+  background-color: rgb(82, 164, 179)
+}
+
+h1, h2{
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 10px;
+  text-align: center;
+}
+
+h4, h5{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h4{
+  padding: 15px;
+}
+
+h5{
+  text-decoration: underline;
+}
+
+p{
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}

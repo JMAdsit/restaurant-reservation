@@ -1,31 +1,34 @@
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { updateStatus } from "../utils/api";
+import { displayDate, displayTime} from "../utils/date-time";
 
 function ReservationDisplay(reservation) {
     const history = useHistory();
     //format singular/plural
     let people = "people";
     if(reservation.people === 1){ people = "person"}
-
+    
     //seat button
     function SeatButton() {
-        if(reservation.status !== "booked") { return null; }
+        if(reservation.status !== "booked") return null;
 
-        let reservation_id = reservation.reservation_id;
-        return <Link to={`/reservations/${reservation_id}/seat`} className="btn btn-secondary">Seat</Link>
+        const reservation_id = reservation.reservation_id;
+        return <Link to={`/reservations/${reservation_id}/seat`} className="btn btn-success">Seat</Link>
     }
 
     //edit button
     function EditButton() {
-        if(reservation.status !== "booked") {return null;}
-        let reservation_id = reservation.reservation_id;
+        if(reservation.status !== "booked") return null;
+
+        const reservation_id = reservation.reservation_id;
         return <Link to={`/reservations/${reservation_id}/edit`} className="btn btn-secondary">Edit</Link>
     }
 
     //handle cancel button
     async function handleCancel(event) {
         event.preventDefault();
+
         if(window.confirm("Do you want to cancel this reservation? This cannot be undone.")){
             try {
                 const data = {status: "cancelled"};
@@ -38,43 +41,32 @@ function ReservationDisplay(reservation) {
     }
 
     //format phone number
-    let number = reservation.mobile_number.toString().split('-').join('');
+    const number = reservation.mobile_number.toString().split('-').join('');
     let phoneNumber;
     if(number.length === 10){
-        let num1 = number.substring(0, 3);
-        let num2 = number.substring(3, 6);
-        let num3 = number.substring(6, 10);
+        const num1 = number.substring(0, 3);
+        const num2 = number.substring(3, 6);
+        const num3 = number.substring(6, 10);
         phoneNumber = `${num1}-${num2}-${num3}`;
     } else {
-        let num1 = number.substring(0, 3);
-        let num2 = number.substring(3, 7);
+        const num1 = number.substring(0, 3);
+        const num2 = number.substring(3, 7);
         phoneNumber = `${num1}-${num2}`;
     }
-
-    //format time
-    let formatTime;
-    let militaryTime = reservation.reservation_time.split(':');
-    militaryTime[0] = parseInt(militaryTime[0]);
-    if(militaryTime[0] > 11){ 
-        if(militaryTime[0] > 12){ militaryTime[0] -= 12; }
-        formatTime = `${militaryTime[0]}:${militaryTime[1]} P.M.`;
-    } else {
-        formatTime = `${militaryTime[0]}:${militaryTime[1]} A.M.`;
-    }
     
-    return <div key={reservation.reservation_id} className="card">
-          <div className="card-body">
+    return <div key={reservation.reservation_id} className="card col-md-auto bg-light">
+        <div className="card-body">
             <h5 className="card-title">Reservation for {reservation.first_name} {reservation.last_name}</h5>
             <p className="card-text"><small className="text-muted">For {reservation.people} {people}</small></p>
             <p className="card-text">Phone Number: {phoneNumber}</p>
-            <p className="card-text">Date: {reservation.reservation_date}</p>
-            <p className="card-text">Time: {formatTime}</p>
+            <p className="card-text">Date: {displayDate(reservation.reservation_date)}</p>
+            <p className="card-text">Time: {displayTime(reservation.reservation_time)}</p>
             <p className="card-text" data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status}</p>
-            <button onClick={(event) => handleCancel(event)} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-secondary">Cancel</button>
+            <button onClick={(event) => handleCancel(event)} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-danger">Cancel</button>
             <EditButton />
             <SeatButton />
-          </div>
         </div>
+    </div>
 }
 
 function ReservationList({ date, phoneQuery, reservations }) {
@@ -85,7 +77,7 @@ function ReservationList({ date, phoneQuery, reservations }) {
     const list = reservations.map(ReservationDisplay);
 
     //check for type of list
-    let listType = date;
+    let listType = displayDate(date);
     if(phoneQuery) {
         listType = phoneQuery;
     }
@@ -94,7 +86,10 @@ function ReservationList({ date, phoneQuery, reservations }) {
         <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for {listType}</h4>
         </div>
-        {list}
+        <div className="row">
+            {list}
+        </div>
+        
     </div>;
 }
 

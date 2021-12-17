@@ -9,19 +9,32 @@ const validProperties = [
   "people"
 ];
 
+const validStatuses = [
+  "booked",
+  "seated",
+  "finished",
+  "cancelled"
+];
+
+const acceptableStatuses = [
+  "reservation_id",
+  "created_at",
+  "updated_at"
+];
+
 function hasValidProperties(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
-  let data = req.body;
-
-  //date and time regex
-  let dateRegex = /[0-9]{4}-[0-9]{2}-[0-9]{2}/;
-  let timeRegex = /[0-9]{2}:[0-9]{2}/;
+  const data = req.body;
 
   //error if no data
   if(!data) { 
     return next({ status: 400, message: `Requires request body.` });
   }
+
+  //date and time regex
+  const dateRegex = /[0-9]{4}-[0-9]{2}-[0-9]{2}/;
+  const timeRegex = /[0-9]{2}:[0-9]{2}/;
   
   //confirms properties exist and have appropriate values
   validProperties.forEach((prop) => {
@@ -45,18 +58,23 @@ function hasValidProperties(req, res, next) {
 function hasOnlyValidProperties(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
-  let data = req.body;
+  const data = req.body;
 
   //confirm no unexpected properties exist
   for(const prop in data) {
     if(!validProperties.includes(prop)) {
+
+      //check for valid status
       if(prop === "status") { 
         if(data.status !== "booked"){
           return next({ status: 400, message: `Status cannot be initiated as ${data.status}.` })
         }
         continue; 
       }
-      if(prop === "reservation_id" || prop === "created_at" || prop === "updated_at") {continue;}
+
+      //allow acceptable but not-required properties
+      if(acceptableStatuses.includes(prop)) continue;
+
       return next({ status: 400, message: `${prop} is not a valid property.` })
     }
   }
@@ -67,12 +85,12 @@ function hasOnlyValidProperties(req, res, next) {
 function onlyValidDates(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
-  let data = req.body;
+  const data = req.body;
 
   //get day of the week
   const rDate = new Date(`${data.reservation_date} ${data.reservation_time}`);
   const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  let day = weekday[rDate.getDay()];
+  const day = weekday[rDate.getDay()];
 
   //return error if date is a past Tuesday
   if(day === "Tuesday" && rDate < new Date()) {
@@ -120,18 +138,21 @@ async function reservationExists(req, res, next) {
 async function validStatus(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
-  let data = req.body;
+  const data = req.body;
 
   const reservation = res.locals.reservation;
 
-  if(data.status !== "booked" && data.status !== "seated" && data.status !== "finished" && data.status !== "cancelled"){
+  //confirms that status is valid
+  if(!validStatuses.includes(data.status)){
     return next({ status: 400, message: `${data.status} is not a valid status.`})
   }
 
+  //returns error if trying to cancel a seated or finished reservation 
   if(data.status === "cancelled" && reservation.status !== "booked") {
     return next({ status: 400, message: "Only reservations that are booked can be cancelled."})
   }
 
+  //returns error if reservation is already finished
   if(reservation.status === "finished") {
     return next({ status: 400, message: `Cannot change status of finished reservation.`})
   }
@@ -141,15 +162,27 @@ async function validStatus(req, res, next) {
 
 async function list(req, res, next) {
   const { date, mobile_number } = req.query;
+
+  //determine which type of list query is made
   if(mobile_number) {
+    //retrieve query data
     const data = await service.listByPhone(mobile_number);
+
+    //trim date data
     data.forEach((reservation) => {
-      reservation.reservation_date = reservation.reservation_date.toISOString().split("T")[0]});
+      reservation.reservation_date = reservation.reservation_date.toISOString().split("T")[0]
+    });
+
     res.status(200).json({ data });
   } else {
+    //retrieve query data
     const data = await service.list(date);
+
+    //trim date data
     data.forEach((reservation) => {
-      reservation.reservation_date = reservation.reservation_date.toISOString().split("T")[0]});
+      reservation.reservation_date = reservation.reservation_date.toISOString().split("T")[0]
+    });
+    
     res.status(200).json({ data });
   }
 }
