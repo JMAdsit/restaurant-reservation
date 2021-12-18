@@ -3,7 +3,7 @@
  * The default values is overridden by the `API_BASE_URL` environment variable.
  */
  
- const API_BASE_URL = "https://jma-reservation-backend.herokuapp.com/";
+ const API_BASE_URL = "https://jma-reservation-backend.herokuapp.com";
   //  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
  
  /**
