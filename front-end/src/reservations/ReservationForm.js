@@ -107,7 +107,7 @@ function ReservationForm({ date }) {
 
     return <div>
         <ErrorAlert error={errorState} />
-        <h2>New Reservation</h2>
+        <h2>Reservation Form</h2>
         <form onSubmit={(event) => handleSubmit(reservation, event)}>
             <div className="form-group">
                 <label htmlFor="first_name">First Name
