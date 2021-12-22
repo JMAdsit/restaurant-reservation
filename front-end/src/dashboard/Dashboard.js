@@ -27,18 +27,24 @@ function Dashboard({ date }) {
   function loadReservations() {
     const abortController = new AbortController();
     setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
+    try{
+      listReservations({ date }, abortController.signal)
+        .then(setReservations);
+    } catch(error) {
+      setReservationsError(error);
+    }
     return () => abortController.abort();
   }
 
   function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
-    listTables({ date }, abortController.signal)
-      .then(setTables)
-      .catch(setTablesError);
+    try{
+      listTables({ date }, abortController.signal)
+        .then(setTables);
+    } catch(error) {
+      setTablesError(error);
+    }
     return () => abortController.abort();
   }
 

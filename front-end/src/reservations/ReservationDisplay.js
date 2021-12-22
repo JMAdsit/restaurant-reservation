@@ -39,6 +39,12 @@ function ReservationDisplay(reservation) {
             }
         }
     }
+    function CancelButton() {
+        if(reservation.status !== "booked") return null;
+
+        return <button onClick={(event) => handleCancel(event)} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-danger">Cancel</button>
+    }
+    
 
     //format phone number
     const number = reservation.mobile_number.toString().split('-').join('');
@@ -62,7 +68,7 @@ function ReservationDisplay(reservation) {
             <p className="card-text">Date: {displayDate(reservation.reservation_date)}</p>
             <p className="card-text">Time: {displayTime(reservation.reservation_time)}</p>
             <p className="card-text" data-reservation-id-status={reservation.reservation_id}>Status: {reservation.status}</p>
-            <button onClick={(event) => handleCancel(event)} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-danger">Cancel</button>
+            <CancelButton />
             <EditButton />
             <SeatButton />
         </div>
