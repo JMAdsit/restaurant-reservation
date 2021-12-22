@@ -20,9 +20,12 @@ function ReservationForm({ date }) {
     function loadReservation() {
         if(!reservation_Id) { return; }
         const abortController = new AbortController();
-        readReservation({reservation_Id}, abortController.signal)
-          .then(setReservation)
-          .catch(setErrorState);
+        try{
+            readReservation({reservation_Id}, abortController.signal)
+                .then(setReservation);
+        } catch(error) {
+            setErrorState(error);
+        }
         return () => abortController.abort();
     }
     useEffect(loadReservation, [reservation_Id]);

@@ -23,9 +23,12 @@ function SearchReservations() {
         if(!phoneQuery){
             return;
         }
-        searchReservations({ phoneQuery }, abortController.signal)
-            .then(setReservations)
-            .catch(setErrorState);
+        try{
+            searchReservations({ phoneQuery }, abortController.signal)
+                .then(setReservations)
+        } catch(error) {
+            setErrorState(error);
+        }
         return () => abortController.abort();
     }
 

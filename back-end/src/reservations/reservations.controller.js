@@ -1,4 +1,5 @@
 const service = require("./reservations.service");
+const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 const validProperties = [
   "first_name",
@@ -211,8 +212,8 @@ async function put(req, res) {
 
 module.exports = {
   list,
-  read: [reservationExists, read],
-  post: [hasValidProperties, hasOnlyValidProperties, onlyValidDates, post],
-  updateStatus: [reservationExists, validStatus, updateStatus],
-  put: [reservationExists, hasValidProperties, hasOnlyValidProperties, onlyValidDates, put]
+  read: [asyncErrorBoundary(reservationExists), read],
+  post: [hasValidProperties, hasOnlyValidProperties, onlyValidDates, asyncErrorBoundary(post)],
+  updateStatus: [asyncErrorBoundary(reservationExists), validStatus, updateStatus],
+  put: [asyncErrorBoundary(reservationExists), hasValidProperties, hasOnlyValidProperties, onlyValidDates, put]
 }
