@@ -51,6 +51,7 @@ function NewTable() {
         }
     }
 
+    //render new table form
     return <div>
     <ErrorAlert error={errorState} />
     <h2>New Table</h2>
