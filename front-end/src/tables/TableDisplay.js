@@ -47,8 +47,8 @@ function TableDisplay(table) {
     </div>
 }
 
+//return react objects, whether loading or complete list of tables
 function TableList({ tables }) {
-    //return react objects, whether loading or complete list of tables
     if(tables.length < 1) { return <h4>Loading...</h4>}
     const list = tables.map(TableDisplay);
     return <div>
