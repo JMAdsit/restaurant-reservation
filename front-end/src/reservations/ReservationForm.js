@@ -108,6 +108,7 @@ function ReservationForm({ date }) {
         }
     }
 
+    //render reservation form
     return <div>
         <ErrorAlert error={errorState} />
         <h2>Reservation Form</h2>
