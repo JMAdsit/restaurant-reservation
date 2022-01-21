@@ -50,7 +50,7 @@ function SearchReservations() {
         history.push(`/search?mobile_number=${phoneNumber}`)
     }
 
-    //Render search form and any found reservations
+    //render search form and any found reservations
     return <div>
     <ErrorAlert error={errorState} />
     <h2>Search for Reservations</h2>

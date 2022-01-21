@@ -101,7 +101,7 @@ function SeatReservation() {
 
   const options = tables.map(generateOptions);
 
-  //Render seating form and any errors
+  //render seating form and any errors
   return <main>
     <ErrorAlert error={reservationError} />
     <ErrorAlert error={tablesError} />
