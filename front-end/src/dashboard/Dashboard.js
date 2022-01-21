@@ -12,18 +12,22 @@ import TableList from "../tables/TableDisplay";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {
+  //declare states for reservations, tables, and errors
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tablesError, setTablesError] = useState(null);
 
+  //check for queries
   const query = useQuery();
   const dateQuery = query.get("date");
   if(dateQuery) date = dateQuery;
 
+  //reload reservation and table states when date changes
   useEffect(loadReservations, [date]);
   useEffect(loadTables, [date]);
 
+  //load reservations from backend and save it in reservations state
   function loadReservations() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -36,6 +40,7 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  //load tables from backend and save it in tables state
   function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
@@ -48,6 +53,7 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  //render dashboard with title and lists of reservations and tables
   return (
     <main>
       <h1>Dashboard</h1>
