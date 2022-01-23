@@ -1,3 +1,6 @@
+/**
+ * Method Not Allowed error for routes
+ */
 function methodNotAllowed(req, res, next) {
     next({
       status: 405,
