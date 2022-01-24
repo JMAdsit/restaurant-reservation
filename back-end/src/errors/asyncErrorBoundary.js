@@ -1,3 +1,6 @@
+/**
+ * Async error boundary function to catch errors with server requests
+ */
 function asyncErrorBoundary(delegate, defaultStatus) {
     return (req, res, next) => {
       Promise.resolve()
