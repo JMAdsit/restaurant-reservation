@@ -1,6 +1,7 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
+//declare valid properties and statuses
 const validProperties = [
   "first_name",
   "last_name",
