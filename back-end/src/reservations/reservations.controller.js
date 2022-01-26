@@ -24,6 +24,7 @@ const acceptableStatuses = [
   "updated_at"
 ];
 
+//Check if sent data has valid properties
 function hasValidProperties(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
