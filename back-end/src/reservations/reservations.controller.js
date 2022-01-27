@@ -58,6 +58,7 @@ function hasValidProperties(req, res, next) {
   next();
 }
 
+//Check if sent data has any properties that aren't acceptable
 function hasOnlyValidProperties(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
