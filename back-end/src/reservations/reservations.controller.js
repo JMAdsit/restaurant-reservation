@@ -86,6 +86,7 @@ function hasOnlyValidProperties(req, res, next) {
   return next();
 }
 
+//Check if the date is valid
 function onlyValidDates(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
