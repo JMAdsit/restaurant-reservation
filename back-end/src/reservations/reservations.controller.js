@@ -125,6 +125,7 @@ function onlyValidDates(req, res, next) {
   return next();
 }
 
+//Confirms reservation exists and saves it into locals
 async function reservationExists(req, res, next) {
   //get reservation
   const {reservation_Id} = req.params;
