@@ -141,6 +141,7 @@ async function reservationExists(req, res, next) {
   return next({ status: 404, message: `Reservation ${req.params.reservation_Id} not found.` })
 }
 
+//Confirms the status being used to update is valid
 async function validStatus(req, res, next) {
   //get data regardless of api style
   if(req.body.data){ req.body = req.body.data; }
