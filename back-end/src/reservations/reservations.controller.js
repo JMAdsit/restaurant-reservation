@@ -167,7 +167,8 @@ async function validStatus(req, res, next) {
   next();
 }
 
-async function list(req, res, next) {
+//Query and return list of reservations by phone number or by date
+async function list(req, res) {
   const { date, mobile_number } = req.query;
 
   //determine which type of list query is made
