@@ -195,6 +195,7 @@ async function list(req, res) {
   }
 }
 
+//Trim the date variable and return properly formated single reservation data
 async function read(req, res) {
   const data = res.locals.reservation;
   data.reservation_date = data.reservation_date.toISOString().split("T")[0];
