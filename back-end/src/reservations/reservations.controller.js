@@ -202,6 +202,7 @@ async function read(req, res) {
   res.json({ data });
 }
 
+//Post reservation data then return it
 async function post(req, res) {
   const data = await service.post(req.body);
   res.status(201).json({ data: data });
