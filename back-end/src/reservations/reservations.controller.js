@@ -208,6 +208,7 @@ async function post(req, res) {
   res.status(201).json({ data: data });
 }
 
+//Update status of a reservation and return that reservation's data
 async function updateStatus(req, res) {
   const reservation = res.locals.reservation;
   const data = await service.updateStatus(req.body.status, reservation.reservation_id);
