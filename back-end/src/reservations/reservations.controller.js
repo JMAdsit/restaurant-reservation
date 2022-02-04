@@ -215,6 +215,7 @@ async function updateStatus(req, res) {
   res.status(200).json({ data: data });
 }
 
+//Update a reservation and return the data
 async function put(req, res) {
   const data = await service.put(req.body);
   res.status(200).json({ data: data });
