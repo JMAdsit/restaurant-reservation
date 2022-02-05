@@ -1,6 +1,6 @@
 const knex = require("../db/connection");
 
-
+//Make a knex SQL query to fina all reservations for a specific date, excluding some statuses
 function list(date) {
   return knex("reservations")
         .whereNot({ status: "finished" })
