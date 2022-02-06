@@ -1,6 +1,6 @@
 const knex = require("../db/connection");
 
-//Make a knex SQL query to fina all reservations for a specific date, excluding some statuses
+//Make a knex SQL query to find all reservations for a specific date, excluding some statuses
 function list(date) {
   return knex("reservations")
         .whereNot({ status: "finished" })
@@ -10,6 +10,7 @@ function list(date) {
         .then();
 }
 
+//Make a knex SQL query to find all reservations for the specific phone number
 function listByPhone(mobile_number) {
   return knex("reservations")
     .whereRaw(
