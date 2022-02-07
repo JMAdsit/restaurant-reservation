@@ -20,6 +20,7 @@ function listByPhone(mobile_number) {
     .orderBy("reservation_date");
 }
 
+//Make a knex SQL query to return a specific reservation
 function read(reservationId) {
   return knex("reservations")
         .where({ "reservation_id": reservationId })
