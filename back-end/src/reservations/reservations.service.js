@@ -28,6 +28,7 @@ function read(reservationId) {
         .then();
 }
 
+//Make a knex SQL query to add a new reservation
 function post(data) {
     return knex("reservations")
         .insert(data)
