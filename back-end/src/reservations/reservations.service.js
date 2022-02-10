@@ -36,7 +36,6 @@ function post(data) {
         .then((createdRecords) => createdRecords[0]);
 }
 
-
 //Make a knex SQL query to update the status of a reservation
 function updateStatus(status, reservationId) {
   return knex("reservations")
@@ -46,6 +45,7 @@ function updateStatus(status, reservationId) {
         .then((records) => records[0]);
 }
 
+//Make a knex SQL query to update a reservation
 function put(reservation) {
   return knex("reservations")
         .where({ "reservation_id": reservation.reservation_id })
