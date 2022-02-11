@@ -1,6 +1,7 @@
 const service = require("./tables.service");
 const resService = require("../reservations/reservations.service");
 
+//Checks data to confirm it has valid table properties
 function hasValidProperties(req, res, next) {
     //get data regardless of api style
     if(req.body.data){ req.body = req.body.data; }
