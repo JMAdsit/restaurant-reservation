@@ -25,6 +25,7 @@ function hasValidProperties(req, res, next) {
     return next();
 }
 
+//Confirm that a reservation id is valid, saves knex SQL read of that reservation to locals if it does
 async function validReservation(req, res, next) {
     //get data regardless of api style
     if(req.body.data){ req.body = req.body.data; }
