@@ -53,6 +53,7 @@ async function validReservation(req, res, next) {
     return next();
 }
 
+//Returns an error if the table is full or too small for the reservation
 async function validTable(req, res, next) {
     //get variables
     const reservation = res.locals.reservation;
