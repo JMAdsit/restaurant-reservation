@@ -73,6 +73,7 @@ async function validTable(req, res, next) {
     return next();
 }
 
+//Confirms a table exists and saves it to locals, or returns an error if no table
 async function seatingOccupied(req, res, next) {
     //get table
     const tableId = req.params.table_id
