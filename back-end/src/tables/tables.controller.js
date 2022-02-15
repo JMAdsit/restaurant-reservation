@@ -93,6 +93,7 @@ async function seatingOccupied(req, res, next) {
     return next({ status: 400, message: `Table is not occupied.` })
 }
 
+//Makes Knex SQL query to list every table and returns it
 async function list(req, res) {
     const { date } = req.query;
     const data = await service.list(date);
