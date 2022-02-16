@@ -100,6 +100,7 @@ async function list(req, res) {
     res.status(200).json({ data });
 }
 
+//Makes a Knex SQL query to add a new table
 async function post(req, res) {
     const data = await service.post(req.body);
     res.status(201).json({ data: data });
