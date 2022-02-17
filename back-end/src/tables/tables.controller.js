@@ -106,8 +106,8 @@ async function post(req, res) {
     res.status(201).json({ data: data });
 }
 
+//Pull data from locals to change the status of a table and reservation to seated
 async function seat(req, res) {
-    //get variables
     const reservationId = res.locals.reservation.reservation_id;
     const tableId = req.params.table_id;
     
