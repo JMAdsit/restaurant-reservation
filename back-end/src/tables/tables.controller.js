@@ -116,6 +116,7 @@ async function seat(req, res) {
     res.status(200).json({ data: data });
 }
 
+//Pull data from locals to update status of table and reservation after meal
 async function unseat(req, res) {
     const table = res.locals.table;
     const reservationId = null;
