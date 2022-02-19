@@ -1,6 +1,6 @@
 const knex = require("../db/connection");
 
-
+//Make a knex SQL query to return all tables, ordered by name
 function list() {
   return knex("tables")
         .groupBy("tables.table_id")
