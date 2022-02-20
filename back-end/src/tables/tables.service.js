@@ -8,6 +8,7 @@ function list() {
         .then();
 }
 
+//Make a knex SQL query to return a single table
 function read(tableId) {
   return knex("tables")
         .select("*")
