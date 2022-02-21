@@ -16,6 +16,7 @@ function read(tableId) {
         .first();
 }
 
+//Make a knex SQL query to add new table data
 function post(data) {
     return knex("tables")
         .insert(data)
