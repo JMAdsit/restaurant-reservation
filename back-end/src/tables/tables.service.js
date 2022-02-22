@@ -24,6 +24,7 @@ function post(data) {
         .then((createdRecords) => createdRecords[0]);
 }
 
+//Make knex SQL query to seat a reservation at a table
 function update(tableId, reservationId) {
   return knex("tables")
         .select("*")
