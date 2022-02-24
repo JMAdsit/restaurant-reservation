@@ -5,6 +5,7 @@ import { displayDate, displayTime} from "../utils/date-time";
 
 function ReservationDisplay(reservation) {
     const history = useHistory();
+
     //format singular/plural
     let people = "people";
     if(reservation.people === 1){ people = "person"}
@@ -75,6 +76,7 @@ function ReservationDisplay(reservation) {
     </div>
 }
 
+//Function for generating react list of reservations
 function ReservationList({ date, phoneQuery, reservations }) {
     //check for no data
     if(reservations.length < 1){ return <h4>No reservations found.</h4> }
