@@ -26,7 +26,7 @@ function ReservationDisplay(reservation) {
         return <Link to={`/reservations/${reservation_id}/edit`} className="btn btn-secondary">Edit</Link>
     }
 
-    //handle cancel button
+    //handle cancel button click
     async function handleCancel(event) {
         event.preventDefault();
 
@@ -40,6 +40,8 @@ function ReservationDisplay(reservation) {
             }
         }
     }
+
+    //
     function CancelButton() {
         if(reservation.status !== "booked") return null;
 
