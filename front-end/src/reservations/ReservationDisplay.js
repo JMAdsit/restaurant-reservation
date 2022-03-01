@@ -48,7 +48,6 @@ function ReservationDisplay(reservation) {
         return <button onClick={(event) => handleCancel(event)} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-danger">Cancel</button>
     }
     
-
     //format phone number
     const number = reservation.mobile_number.toString().split('-').join('');
     let phoneNumber;
