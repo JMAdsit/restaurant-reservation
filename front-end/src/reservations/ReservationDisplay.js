@@ -91,6 +91,7 @@ function ReservationList({ date, phoneQuery, reservations }) {
     if(phoneQuery) {
         listType = phoneQuery;
     }
+    
     //render reservations with appropriate title
     return <div>
         <div className="d-md-flex mb-3">
