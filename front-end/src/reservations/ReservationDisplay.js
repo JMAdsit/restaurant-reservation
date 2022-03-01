@@ -41,7 +41,7 @@ function ReservationDisplay(reservation) {
         }
     }
 
-    //
+    //render cancel button only if the status is "booked"
     function CancelButton() {
         if(reservation.status !== "booked") return null;
 
