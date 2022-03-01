@@ -62,6 +62,7 @@ function ReservationDisplay(reservation) {
         phoneNumber = `${num1}-${num2}`;
     }
     
+    //render reservation card
     return <div key={reservation.reservation_id} className="card col-md-auto bg-light">
         <div className="card-body">
             <h5 className="card-title">Reservation for {reservation.first_name} {reservation.last_name}</h5>
