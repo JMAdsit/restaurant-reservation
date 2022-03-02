@@ -4,7 +4,7 @@ import { createReservation, readReservation, updateReservation } from "../utils/
 import ErrorAlert from "../layout/ErrorAlert";
 
 function ReservationForm({ date }) {
-    //declare reservation state
+    //declare reservation and error states
     let [errorState, setErrorState] = useState(null);
     let [reservation, setReservation] = useState({ 
         "first_name": "", 
