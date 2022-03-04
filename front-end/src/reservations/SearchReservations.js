@@ -6,7 +6,7 @@ import ReservationList from "./ReservationDisplay";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function SearchReservations() {
-    //declare states
+    //declare reservations, phoneNumber, and error states
     const [reservations, setReservations] = useState([]);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [errorState, setErrorState] = useState(null);
