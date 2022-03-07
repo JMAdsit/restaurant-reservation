@@ -15,8 +15,7 @@ function SearchReservations() {
     const query = useQuery();
     const phoneQuery = query.get("mobile_number");
 
-    useEffect(loadReservations, [phoneQuery]);
-
+    //Load reservations when phoneQuery state changes
     function loadReservations() {
         const abortController = new AbortController();
         setErrorState(null);
@@ -31,6 +30,7 @@ function SearchReservations() {
         }
         return () => abortController.abort();
     }
+    useEffect(loadReservations, [phoneQuery]);
 
     //handle changes in form input
     const changeHandler = event => {
