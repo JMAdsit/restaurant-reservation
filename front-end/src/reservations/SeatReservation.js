@@ -99,6 +99,7 @@ function SeatReservation() {
     return <option key={table.table_id} value={table.table_id}>{table.table_name} - {table.capacity}</option>
   }
 
+  //generate table options for seating
   const options = tables.map(generateOptions);
 
   //render seating form and any errors
