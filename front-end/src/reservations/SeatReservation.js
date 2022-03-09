@@ -12,9 +12,6 @@ function SeatReservation() {
   const [tablesError, setTablesError] = useState(null);
   const [selectedTable, setSelectedTable] = useState(null);
 
-  //load tables and reservation
-  useEffect(loadTables, []);
-
   //load reservation
   function loadReservation() {
     const abortController = new AbortController();
@@ -26,6 +23,7 @@ function SeatReservation() {
   }
   useEffect(loadReservation, [reservation_Id]);
 
+  //load tables
   function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
@@ -34,6 +32,7 @@ function SeatReservation() {
       .catch(setTablesError);
     return () => abortController.abort();
   }
+  useEffect(loadTables, []);
 
   //handle change of select option
   const changeHandler = event => {
