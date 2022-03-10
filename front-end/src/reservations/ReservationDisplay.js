@@ -26,7 +26,7 @@ function ReservationDisplay(reservation) {
         return <Link to={`/reservations/${reservation_id}/edit`} className="btn btn-secondary">Edit</Link>
     }
 
-    //handle cancel button
+    //handle cancel button click
     async function handleCancel(event) {
         event.preventDefault();
 
@@ -40,13 +40,14 @@ function ReservationDisplay(reservation) {
             }
         }
     }
+
+    //render cancel button only if the status is "booked"
     function CancelButton() {
         if(reservation.status !== "booked") return null;
 
         return <button onClick={(event) => handleCancel(event)} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-danger">Cancel</button>
     }
     
-
     //format phone number
     const number = reservation.mobile_number.toString().split('-').join('');
     let phoneNumber;
@@ -61,6 +62,7 @@ function ReservationDisplay(reservation) {
         phoneNumber = `${num1}-${num2}`;
     }
     
+    //render reservation card
     return <div key={reservation.reservation_id} className="card col-md-auto bg-light">
         <div className="card-body">
             <h5 className="card-title">Reservation for {reservation.first_name} {reservation.last_name}</h5>
@@ -89,6 +91,7 @@ function ReservationList({ date, phoneQuery, reservations }) {
     if(phoneQuery) {
         listType = phoneQuery;
     }
+    
     //render reservations with appropriate title
     return <div>
         <div className="d-md-flex mb-3">

@@ -4,7 +4,7 @@ import { createReservation, readReservation, updateReservation } from "../utils/
 import ErrorAlert from "../layout/ErrorAlert";
 
 function ReservationForm({ date }) {
-    //declare reservation state
+    //declare reservation and error states
     let [errorState, setErrorState] = useState(null);
     let [reservation, setReservation] = useState({ 
         "first_name": "", 
@@ -18,7 +18,7 @@ function ReservationForm({ date }) {
     //check for reservation and load it if it exists
     const { reservation_Id } = useParams();
     function loadReservation() {
-        if(!reservation_Id) { return; }
+        if(!reservation_Id) { return }
         const abortController = new AbortController();
         try{
             readReservation({reservation_Id}, abortController.signal)
@@ -149,8 +149,7 @@ function ReservationForm({ date }) {
                     id="mobile_number"
                     name="mobile_number" 
                     type="tel" 
-                    placeholder="1234567890" 
-                    // pattern="[0-9]{7-10}"
+                    placeholder="1234567890"
                     value={reservation.mobile_number}
                     onChange={changeHandler}
                     />
