@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { updateStatus } from "../utils/api";
 import { displayDate, displayTime} from "../utils/date-time";
 
+//generate reservation display
 function ReservationDisplay(reservation) {
     const history = useHistory();
 
