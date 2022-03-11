@@ -3,6 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { createReservation, readReservation, updateReservation } from "../utils/api.js";
 import ErrorAlert from "../layout/ErrorAlert";
 
+//generate reservation form
 function ReservationForm({ date }) {
     //declare reservation and error states
     let [errorState, setErrorState] = useState(null);
